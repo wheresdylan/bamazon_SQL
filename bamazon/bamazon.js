@@ -76,20 +76,50 @@ function units(idPicked){
             }else if(units <= res[0].stock_quantity){
 
                 var moneySpent = 0;
+                var newSales = 0;
                 var newUnits = 0;
 
                 moneySpent = units * res[0].price;
+                newSales = moneySpent + res[0].product_sales;
                 newUnits = res[0].stock_quantity - units;
+
+                console.log(newSales);
 
                 connection.query("UPDATE products SET ? WHERE ?",[{stock_quantity:newUnits},{item_id: idPicked}], function(err, res){
                     if (err) throw err;
 
-                    console.log("\nYou spent " + moneySpent + "\n");
+                    // console.log("\nYou spent " + moneySpent + "\n");
 
-                    chooseAgain();
+                    // console.log("new sales" + newSales);
+
+                    // chooseAgain();
 
                     // displayProducts();
+
+                    connection.query("UPDATE products SET ? WHERE ?",[{product_sales:newSales},{item_id: idPicked}], function(err, res){
+                        if (err) throw err;
+    
+                        console.log("\nYou spent " + moneySpent + "\n");
+    
+                        console.log("new sales" + newSales);
+    
+                        chooseAgain();
+    
+                        // displayProducts();
+                    })
                 })
+
+                // connection.query("UPDATE products SET ? WHERE ?",[{product_sales:newSales},{item_id: idPicked}], function(err, res){
+                //     if (err) throw err;
+
+                //     console.log("\nYou spent " + moneySpent + "\n");
+
+                //     console.log("new sales" + newSales);
+
+                //     chooseAgain();
+
+                //     // displayProducts();
+                // })
             }
         })
     })
