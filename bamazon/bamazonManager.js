@@ -157,48 +157,62 @@ function addNewProduct() {
 
         var newProduct = res.product;
 
-        inquirer.prompt([
-            {
-                name: "department",
-                message: "What department would you like to add it to? "
-            }
-        ]).then(function (res) {
+        var departments = [];
 
-            var department = res.department;
+        connection.query("SELECT * FROM departments ", function (err, res) {
+            if (err) throw err;
+            for (var i = 0; i < res.length; i++) {
+                departments.push(res[i].department_name);
+            }
+
+
 
             inquirer.prompt([
                 {
-                    name: "price",
-                    message: "What is the price? "
+                    type: "list",
+                    name: "department",
+                    choices: departments,
+                    message: "What department would you like to add it to? "
                 }
             ]).then(function (res) {
 
-                var price = parseInt(res.price);
+                var department = res.department;
 
                 inquirer.prompt([
                     {
-                        name: "inventory",
-                        message: "How much inventory are you adding? "
+                        name: "price",
+                        message: "What is the price? "
                     }
                 ]).then(function (res) {
 
-                    var inventory = parseInt(res.inventory);
+                    var price = parseInt(res.price);
+
+                    inquirer.prompt([
+                        {
+                            name: "inventory",
+                            message: "How much inventory are you adding? "
+                        }
+                    ]).then(function (res) {
+
+                        var inventory = parseInt(res.inventory);
 
 
-                    connection.query("INSERT INTO products(product_name, department_name, price, stock_quantity, product_sales) VALUES ('" + newProduct + "','" + department + "'," + price + "," + inventory + ", 0)", function (err) {
+                        connection.query("INSERT INTO products(product_name, department_name, price, stock_quantity, product_sales) VALUES ('" + newProduct + "','" + department + "'," + price + "," + inventory + ", 0)", function (err) {
 
-                        if (err) throw err;
+                            if (err) throw err;
+
+                        })
+
+                        menuOptions();
+
 
                     })
-
-                    menuOptions();
 
 
                 })
 
 
             })
-
 
         })
 

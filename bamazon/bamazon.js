@@ -85,6 +85,10 @@ function units(idPicked){
 
                 console.log(newSales);
 
+                var departmentName = res[0].department_name;
+
+                console.log(departmentName);
+
                 connection.query("UPDATE products SET ? WHERE ?",[{stock_quantity:newUnits},{item_id: idPicked}], function(err, res){
                     if (err) throw err;
 
@@ -102,8 +106,22 @@ function units(idPicked){
                         console.log("\nYou spent " + moneySpent + "\n");
     
                         console.log("new sales" + newSales);
+
+                        connection.query("SELECT * FROM departments WHERE ?", [{department_name: departmentName}], function(err, res){
+                            if (err) throw err;
+
+                            newDepartmentSales = newSales + res[0].department_sales;
+
+                            connection.query("UPDATE departments SET ? WHERE ?",[{department_sales:newDepartmentSales},{department_name: departmentName}], function(err, res){
+
+                                if (err) throw err;
+
+                                chooseAgain();
+
+                            });
+                        });
     
-                        chooseAgain();
+                       
     
                         // displayProducts();
                     })
