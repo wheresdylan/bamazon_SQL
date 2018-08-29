@@ -1,6 +1,5 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
-var Table = require('cli-table');
 
 var connection = mysql.createConnection({
     host: "127.0.0.1",
@@ -47,7 +46,6 @@ function itemID(){
             message:"Which item would you like to buy (by ID)? "
         }
     ]).then(function(res){
-        console.log(res.id);
 
         var idPicked = parseInt(res.id);
 
@@ -62,7 +60,6 @@ function units(idPicked){
             message:"How many units would you like to buy? "
         }
     ]).then(function(res){
-        // console.log(res.units);
 
         var units = parseInt(res.units);
 
@@ -83,29 +80,16 @@ function units(idPicked){
                 newSales = moneySpent + res[0].product_sales;
                 newUnits = res[0].stock_quantity - units;
 
-                console.log(newSales);
-
                 var departmentName = res[0].department_name;
-
-                console.log(departmentName);
 
                 connection.query("UPDATE products SET ? WHERE ?",[{stock_quantity:newUnits},{item_id: idPicked}], function(err, res){
                     if (err) throw err;
-
-                    // console.log("\nYou spent " + moneySpent + "\n");
-
-                    // console.log("new sales" + newSales);
-
-                    // chooseAgain();
-
-                    // displayProducts();
 
                     connection.query("UPDATE products SET ? WHERE ?",[{product_sales:newSales},{item_id: idPicked}], function(err, res){
                         if (err) throw err;
     
                         console.log("\nYou spent " + moneySpent + "\n");
     
-                        console.log("new sales" + newSales);
 
                         connection.query("SELECT * FROM departments WHERE ?", [{department_name: departmentName}], function(err, res){
                             if (err) throw err;
@@ -120,24 +104,8 @@ function units(idPicked){
 
                             });
                         });
-    
-                       
-    
-                        // displayProducts();
                     })
                 })
-
-                // connection.query("UPDATE products SET ? WHERE ?",[{product_sales:newSales},{item_id: idPicked}], function(err, res){
-                //     if (err) throw err;
-
-                //     console.log("\nYou spent " + moneySpent + "\n");
-
-                //     console.log("new sales" + newSales);
-
-                //     chooseAgain();
-
-                //     // displayProducts();
-                // })
             }
         })
     })
